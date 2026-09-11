@@ -232,3 +232,22 @@ pre {
   .scene-panel { height: 54vh; min-height: 420px; order: -1; }
   .transport { position: sticky; bottom: 0; }
 }
+
+.startup-error {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: min(520px, calc(100% - 40px));
+  padding: 18px;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(239, 125, 128, .65);
+  border-radius: 12px;
+  color: #f8d9da;
+  background: rgba(30, 10, 15, .94);
+  font: 12px/1.5 monospace;
+}
+.startup-error strong,
+.startup-error span,
+.startup-error small { display: block; }
+.startup-error strong { margin-bottom: 8px; color: #fff; }
+.startup-error span { overflow-wrap: anywhere; }
+.startup-error small { margin-top: 10px; color: #c89598; }
