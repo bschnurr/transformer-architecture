@@ -79,7 +79,7 @@ Run the existing visualization and trace checks with Node.js 22 or later:
 npm test
 ~~~
 
-The inherited Transformer scene is still the active renderer on this initial branch. The next slice will introduce the evaluator-specific spatial scene and connect it to the new story data.
+The active renderer is now a procedural Three.js map of the evaluator modules. It supports orbit and zoom controls, clickable source-grounded modules, scenario switching, step-by-step playback, animated evaluator traffic, overload candidate state, TypeVar constraints, and inferred-result display.
 
 ## Roadmap
 
