@@ -1,61 +1,96 @@
-# Transformer Architecture
+# Pyright Type Evaluator Explorer
 
-Explore the original Transformer and DeepSeek V4.1 Flash in interactive 3D. Follow the token flow, zoom inside the components, or take a one-minute tour of what changed.
+An interactive explanation of how [Pyright](https://github.com/microsoft/pyright) turns Python syntax into types, overload decisions, narrowed unions, and diagnostics.
 
-Built with **GPT-6-Astra** in Codex.
+This project is derived from Peter Gostev's MIT-licensed [Transformer Architecture](https://github.com/petergpt/transformer-architecture) visualizer. Its Three.js scene, spatial navigation, camera tours, and story controls provide the presentation framework. The model and explanations are being replaced with a source-grounded view of Pyright's type evaluator.
 
-**[Open the live demo →](https://transformer-architecture.petergostev.chatgpt.site/)**
+## Current prototype
 
-![The original Transformer and DeepSeek V4.1 Flash, side by side in story mode](docs/screenshots/overview.png)
+The first implementation slice defines the explanation data layer:
 
-## Explore
+- a versioned evaluator event format
+- a catalog of evaluator subsystems
+- two overload-resolution traces
+- a timed guided story
+- validation and state-reconstruction tests
 
-- **See the whole architecture.** Both models follow the structure of their papers, with animated paths connecting the components.
-- **Look inside.** Click a component or zoom toward it to reveal attention heads, expert routing, residual streams and memory.
-- **Play the story.** A 60-second camera tour compares attention, reuse, experts, memory, vision and drafting.
-- **Change the context.** Adjust the token count to explore the traffic and cache illustrations. Pause or slow the animation whenever you like.
+The scenario explains these calls:
 
-![A close-up comparing attention in the two architectures](docs/screenshots/attention.png)
+~~~python
+from typing import overload, TypeVar
+
+T = TypeVar("T")
+
+@overload
+def transform(value: int) -> str: ...
+@overload
+def transform(value: T) -> list[T]: ...
+
+first = transform(1)        # str
+second = transform("hello") # list[str]
+~~~
+
+The second call demonstrates candidate rejection, diagnostic evidence, TypeVar constraint solving, signature specialization, and the resulting list[str] type.
+
+## Source model
+
+The visualization follows the module boundaries in Bill Schnurr's experimental [typeEval-explained](https://github.com/bschnurr/pyright/tree/typeEval-explained/packages/pyright-internal/src/analyzer/typeEvaluator) branch:
+
+| Visual region | Pyright source | Responsibility |
+| --- | --- | --- |
+| Evaluator core | evaluatorCore.ts | Shared evaluator state and coordination |
+| Expression evaluation | expressionEvaluation.ts | Expression-shaped parse nodes and call evaluation |
+| Type compatibility | assignFunctions.ts | Source-to-destination compatibility |
+| Type variables | typeVarHandling.ts | TypeVar binding and specialization |
+| Flow analysis | flowAnalysis.ts | Effective types from control flow |
+| Narrowing | narrowing.ts | Union narrowing from conditions and guards |
+| Member resolution | memberResolution.ts | Lookup and binding |
+| Collection inference | collectionInference.ts | List, tuple, set, and dictionary inference |
+| Diagnostics | diagnostics.ts | Rule configuration and diagnostic output |
+
+These are educational boundaries. The trace remains explicit about which details are schematic and which correspond to concrete evaluator operations.
+
+## Trace format
+
+dist/pyright/trace-model.mjs defines events understood by the future renderer:
+
+- enter and leave
+- dispatch
+- candidate
+- compatibility
+- constraint
+- cache
+- result
+- diagnostic
+
+Curated examples can use this format now. A later instrumented Pyright adapter can emit the same format, allowing the viewer to explain arbitrary expressions.
 
 ## Run locally
 
-No build step, API key or model download. Python 3 is enough:
+No dependency installation is required. Serve dist/ with Python:
 
-```bash
-git clone https://github.com/petergpt/transformer-architecture.git
-cd transformer-architecture
+~~~bash
 python3 -m http.server 8000 --directory dist
-```
+~~~
 
-Open **http://localhost:8000** in a modern browser. The app uses WebGL and includes its Three.js dependencies locally.
+Run the existing visualization and trace checks with Node.js 22 or later:
 
-## Make it your own
+~~~bash
+npm test
+~~~
 
-The app is plain JavaScript, CSS and HTML. Edit `dist/` and refresh the page.
+The inherited Transformer scene is still the active renderer on this initial branch. The next slice will introduce the evaluator-specific spatial scene and connect it to the new story data.
 
-| File | What it contains |
-| --- | --- |
-| `dist/app.js` | The 3D scene, token flow and interactions |
-| `dist/presentation.mjs` | Attention, routing and other schematic calculations |
-| `dist/story.mjs` · `dist/camera-path.mjs` | Story captions, timing and camera movement |
-| `dist/facts.js` · `dist/sources.js` | Architecture facts and source notes |
-| `blender/architectures.blend` | Editable Blender models and detail geometry |
-| `scripts/build_spatial_architecture.py` | Rebuild the spatial models from the diagram data |
+## Roadmap
 
-See [development notes](docs/development.md) for Blender editing and checks.
+1. Build a lightweight evaluator scene from the module catalog.
+2. Render the selected Python expression and its parse-node path.
+3. Animate overload candidates as parallel lanes.
+4. Show TypeVar constraints and solutions as they change.
+5. Add normal and speculative cache views.
+6. Add flow-narrowing and member-resolution scenarios.
+7. Define an optional trace emitter for the Pyright branch.
 
-## Sources and scope
+## Attribution
 
-Based on [Attention Is All You Need](https://arxiv.org/abs/1706.03762) and the [DeepSeek V4.1 Flash technical report](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/resolve/main/DeepSeek_V41_Tech_Report.pdf), checked on 10 September 2026. The app’s **Sources** panel explains individual quantities and assumptions; [provenance.json](provenance.json) records source and asset hashes.
-
-This is an educational visualization. Token traffic, attention patterns and routing are schematic; they do not run a neural network or measure inference speed. Cache illustrations explicitly compare different storage scopes.
-
-## Build usage
-
-The main Codex project session recorded approximately **83.7 million tokens** through the first public GitHub release on 11 September 2026: **80.9M cached input**, **2.4M uncached input**, and **397K output**, including reasoning.
-
-These figures come from the session logs and include repeated context across model calls; they are not the amount of unique text or code generated. See the [exact counts and counting method](docs/build-usage.json).
-
-## License
-
-[MIT](LICENSE) for the project code, screenshots and original Blender assets. Three.js retains its [MIT license](dist/vendor/LICENSE). Papers and referenced model materials belong to their respective authors; see [third-party notices](THIRD_PARTY_NOTICES.md).
+The original visualization, Blender assets, and interaction system are from [petergpt/transformer-architecture](https://github.com/petergpt/transformer-architecture). Pyright is licensed under the MIT License. See the inherited license and third-party notices.
