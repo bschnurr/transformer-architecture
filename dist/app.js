@@ -308,7 +308,10 @@ function setPlaying(value) {
   lastAdvance = performance.now();
 }
 
-$('#play').addEventListener('click', () => setPlaying(!playing));
+$('#play').addEventListener('click', () => {
+  if (!playing && eventIndex === trace.events.length - 1) setEvent(0);
+  setPlaying(!playing);
+});
 $('#previous').addEventListener('click', () => { setPlaying(false); setEvent(eventIndex - 1); });
 $('#next').addEventListener('click', () => {
   setPlaying(false);
