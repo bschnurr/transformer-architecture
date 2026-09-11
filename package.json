@@ -1,12 +1,12 @@
 {
-  "name": "transformer-architecture",
-  "version": "1.0.0",
+  "name": "pyright-type-evaluator-explorer",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Explore the original Transformer and DeepSeek V4.1 Flash in interactive 3D.",
+  "description": "Explore how Pyright evaluates Python types through interactive, source-grounded traces.",
   "license": "MIT",
   "scripts": {
-    "test": "node tests/architecture.mjs && node tests/story.mjs"
+    "test": "node tests/architecture.mjs && node tests/story.mjs && node tests/pyright-trace.mjs"
   },
   "engines": {
     "node": ">=22"
