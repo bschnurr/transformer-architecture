@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {moduleCatalog, traceStateAt} from './pyright/trace-model.mjs';
-import {scenarios} from './pyright/overload-scenarios.mjs';
+import {moduleCatalog, traceStateAt} from './pyright/trace-model.js';
+import {scenarios} from './pyright/overload-scenarios.js';
 
 const $ = (selector) => document.querySelector(selector);
 const canvas = $('#scene');
