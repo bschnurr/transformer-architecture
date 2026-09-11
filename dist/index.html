@@ -92,6 +92,16 @@
     </div>
   </footer>
 
-  <script type="module" src="app.js?revision=pyright-2"></script>
+  <script type="module">
+    import('./app.js?revision=pyright-3').catch((error) => {
+      const panel = document.querySelector('.scene-panel');
+      const message = document.createElement('div');
+      message.className = 'startup-error';
+      message.innerHTML = '<strong>The 3D viewer could not start.</strong><span></span><small>If this page starts with file://, run the local HTTP server described in the README.</small>';
+      message.querySelector('span').textContent = error?.message || String(error);
+      panel.append(message);
+      console.error(error);
+    });
+  </script>
 </body>
 </html>
