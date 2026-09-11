@@ -145,7 +145,7 @@ candidateGroup.position.set(-0.35, 3.65, 0);
 scene.add(candidateGroup);
 const candidateMeshes = [1, 2].map((candidate, index) => {
   const mesh = new THREE.Mesh(
-    new THREE.CapsuleGeometry(0.22, 1.2, 6, 12),
+    new THREE.CylinderGeometry(0.22, 0.22, 1.2, 16),
     new THREE.MeshStandardMaterial({
       color: 0x384e5e,
       emissive: 0x000000,
